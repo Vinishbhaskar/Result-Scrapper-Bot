@@ -4,22 +4,17 @@ from bs4 import BeautifulSoup as bs
 import os.path
 
 
-def Result_BOT(RegistrationNo, url):
+def Result_Bot_function(RegistrationNo, url):
     import csv
 
     '''
     This function scrap the data from webpage using BeautifulSoup4
-
     '''
-    url = f'http://results.akuexam.net/ResultsBTechBPharm8thSemPub2022.aspx?Sem=VIII&RegNo={RegistrationNo}'
-
+    url = f'https://......./{RegistrationNo}//&RegNo={RegistrationNo}'
     web = rqst.get(url)
-    Registration_num = str(RegistrationNo)
-    clg_code = Registration_num[2:5]
-    csv_file = f"Result/{Registration_num[0:2]}_Batch_College_Code_{clg_code}.csv"
 
     soup = bs(web.content, "html.parser")
-    #text =  soup.body.table.style1
+    # text =  soup.body.table.style1
     status = soup.find('table', {'id': 'ctl00_ContentPlaceHolder1_DataList4'})
 
     if str(status) != 'None':
@@ -35,7 +30,7 @@ def Result_BOT(RegistrationNo, url):
             'span', {'id': 'ctl00_ContentPlaceHolder1_DataList1_ctl00_CourseCodeLabel'}).text
         Course_Name = soup.find(
             'span', {'id': 'ctl00_ContentPlaceHolder1_DataList1_ctl00_CourseLabel'}).text
-        #SGPA = soup.find('span',{'id':'ctl00_ContentPlaceHolder1_DataList5_ctl00_GROSSTHEORYTOTALLabel'}).text
+
         CGPA = soup.find(
             'table', {'id': 'ctl00_ContentPlaceHolder1_GridView3'})
 
@@ -46,64 +41,49 @@ def Result_BOT(RegistrationNo, url):
         # SEMESTER WISE SGPA
         SEM = soup.find('table', {'id': 'ctl00_ContentPlaceHolder1_GridView3'})
 
-        for i in SEM.find_all('td')[0]:
-            title = i.text.strip()
-            SEM1 = title
-        for i in SEM.find_all('td')[1]:
-            title = i.text.strip()
-            SEM2 = title
-        for i in SEM.find_all('td')[2]:
-            title = i.text.strip()
-            SEM3 = title
-        for i in SEM.find_all('td')[3]:
-            title = i.text.strip()
-            SEM4 = title
-        for i in SEM.find_all('td')[4]:
-            title = i.text.strip()
-            SEM5 = title
-        for i in SEM.find_all('td')[5]:
-            title = i.text.strip()
-            SEM6 = title
-        for i in SEM.find_all('td')[6]:
-            title = i.text.strip()
-            SEM7 = title
-        for i in SEM.find_all('td')[7]:
-            title = i.text.strip()
-            SEM8 = title
+        SEM_values = []
+        for td in SEM.find_all('td'):
+            title = td.text.strip()
+            SEM_values.append(title)
 
-        Student = {'Registration No': RegistrationNo,
-                   'Student Name': Student_Name,
-                   'College Code': College_Code,
-                   'College Name': College_Name,
-                   'Course Code': Course_Code,
-                   'Course Name': Course_Name,
-                   'Semester': semester,
-                   # 'SGPA': SGPA,
-                   'SEM I': SEM1,
-                   'SEM II': SEM2,
-                   'SEM III': SEM3,
-                   'SEM IV': SEM4,
-                   'SEM V': SEM5,
-                   'SEM VI': SEM6,
-                   'SEM VII': SEM7,
-                   'SEM VIII': SEM8,
-                   'CGPA': CGPA
-                   }
+        Student = {
+            'Registration No': RegistrationNo,
+            'Student Name': Student_Name,
+            'College Code': College_Code,
+            'College Name': College_Name,
+            'Course Code': Course_Code,
+            'Course Name': Course_Name,
+            'Semester': semester,
+            'SEM I': SEM_values[0],
+            'SEM II': SEM_values[1],
+            'SEM III': SEM_values[2],
+            'SEM IV': SEM_values[3],
+            'SEM V': SEM_values[4],
+            'SEM VI': SEM_values[5],
+            'SEM VII': SEM_values[6],
+            'SEM VIII': SEM_values[7],
+            'CGPA': CGPA
+        }
 
-        header = ['Registration No', 'Student Name', 'College Code', 'College Name', 'Course Code', 'Course Name', 'Semester',
-                  'SEM I', 'SEM II', 'SEM III', 'SEM IV', 'SEM V', 'SEM VI', 'SEM VII', 'SEM VIII', 'CGPA']
+        header = ['Registration No', 'Student Name', 'College Code', 'College Name', 'Course Code', 'Course Name',
+                  'Semester',          'SEM I', 'SEM II', 'SEM III', 'SEM IV', 'SEM V', 'SEM VI', 'SEM VII', 'SEM VIII', 'CGPA']
 
-        data = [RegistrationNo, Student_Name, College_Code, College_Name, Course_Code, Course_Name, semester,
-                SEM1, SEM2, SEM3, SEM4, SEM5, SEM6, SEM7, SEM8, CGPA]
+        # custom file name for seperate csv files
+        Reg_No = str(RegistrationNo)
+        clg_code = Reg_No[5:8]
+        Branch_code = Reg_No[2:5]
+        csv_file = f"Result/{Reg_No[0:2]}_CLG_{clg_code}_{Branch_code}.csv"
 
+       # check file does exist or not
         file_exists = os.path.isfile(csv_file)
 
         try:
             with open(csv_file, 'a') as csvfile:
                 writer = csv.DictWriter(csvfile, fieldnames=header)
+                # write header once only when file does not exist
                 if not file_exists:
                     writer.writeheader()
-                # for i in data:
+                # if file does exist then write the content, not header
                 writer.writerow(Student)
         except IOError:
             print("I/O error")
@@ -112,6 +92,6 @@ def Result_BOT(RegistrationNo, url):
 
 
 RegistrationNo = 0
-url = f'https://......./{RegistrationNo}'
+url = f'https://......./{RegistrationNo}//&RegNo={RegistrationNo}'
 
-Result_BOT(RegistrationNo, url)
+Result_Bot_function(RegistrationNo, url)
