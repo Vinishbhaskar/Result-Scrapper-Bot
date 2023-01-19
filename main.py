@@ -16,9 +16,7 @@ def Reg_generator(Reg_Year, Reg_Branch_Code, Reg_Clg_code, Reg_Student_Id):
                     new_reg = f"{reg}{branch}{clg}{student_id:03d}"
                     Result_Bot_function(int(new_reg), url)
 
-
 '''The value of student_id is formatted to always have 3 digits by using the :03d syntax. This means that if student_id is less than 100, it will be padded with leading zeros to make it have 3 digits. For example, if student_id is 5, the resulting string will be 005. If student_id is 123, the resulting string will be 123.'''
-
 
 if __name__ == "__main__":
     Reg_Year = list(range(18, 19, 1))
@@ -28,7 +26,7 @@ if __name__ == "__main__":
 
     Reg_generator(Reg_Year, Reg_Branch_Code, Reg_Clg_code, Reg_Student_Id)
 
-    # RegistrationNo = int(
+    # RegistrationNo = int(    
     #     str(Reg_Year[0])
     #     + str(Reg_Branch_Code[0])
     #     + str(Reg_Clg_code[0])
